@@ -2,6 +2,8 @@
 class Paddle extends GameObject {
   // Atributos privados específicos del paddle
   private float velocidad;
+
+
   private boolean esJugador; // true para jugador, false para IA
   private float limiteArriba, limiteAbajo;
   
@@ -10,6 +12,8 @@ class Paddle extends GameObject {
     super(x, y, ancho, alto, colorPaddle);
     this.velocidad = velocidad;
     this.esJugador = esJugador;
+
+
     this.limiteArriba = 0;
     this.limiteAbajo = height - alto;
   }
@@ -19,6 +23,8 @@ class Paddle extends GameObject {
   public void actualizar() {
     if (esJugador) {
       actualizarJugador();
+
+
     } else {
       actualizarIA();
     }
@@ -31,6 +37,8 @@ class Paddle extends GameObject {
   private void actualizarJugador() {
     if (keyPressed) {
       if ((key == 'w' || key == 'W') && getY() > limiteArriba) {
+
+        
         mover(-velocidad);
       }
       if ((key == 's' || key == 'S') && getY() < limiteAbajo) {

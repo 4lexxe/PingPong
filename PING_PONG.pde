@@ -40,17 +40,17 @@ void draw() {
 
 // Método privado para inicializar el juego
 void inicializarJuego() {
-  // Crear paddle del jugador (izquierda)
-  jugador = new Paddle(30, height/2 - 60, 15, 120, color(100, 150, 255), 8, true);
+  // Crear paddle del jugador (izquierda) - Verde neón
+  jugador = new Paddle(30, height/2 - 60, 15, 120, color(0, 255, 127), 8, true);
   
-  // Crear primer enemigo IA (derecha superior)
-  ia1 = new Paddle(width - 45, height/4 - 60, 15, 120, color(255, 100, 100), 6, false);
+  // Crear primer enemigo IA (derecha superior) - Magenta vibrante
+  ia1 = new Paddle(width - 45, height/4 - 60, 15, 120, color(255, 0, 127), 6, false);
   
-  // Crear segundo enemigo IA (derecha inferior)
-  ia2 = new Paddle(width - 45, 3*height/4 - 60, 15, 120, color(255, 150, 100), 5, false);
+  // Crear segundo enemigo IA (derecha inferior) - Cian brillante
+  ia2 = new Paddle(width - 45, 3*height/4 - 60, 15, 120, color(0, 191, 255), 5, false);
   
-  // Crear pelota
-  pelota = new Ball(width/2, height/2, 20, color(255, 255, 100), 5);
+  // Crear pelota - Amarillo dorado
+  pelota = new Ball(width/2, height/2, 20, color(255, 215, 0), 5);
 }
 
 // Método para actualizar todos los objetos del juego
@@ -87,10 +87,10 @@ void dibujarJuego() {
 
 // Método privado para dibujar el fondo
 void dibujarFondo() {
-  // Fondo degradado
+  // Fondo degradado con colores más vibrantes
   for (int i = 0; i < height; i++) {
     float inter = map(i, 0, height, 0, 1);
-    color c = lerpColor(color(10, 20, 40), color(20, 40, 80), inter);
+    color c = lerpColor(color(25, 0, 51), color(76, 0, 153), inter); // Púrpura oscuro a púrpura medio
     stroke(c);
     line(0, i, width, i);
   }
@@ -98,12 +98,12 @@ void dibujarFondo() {
 
 // Método privado para dibujar la línea central
 void dibujarLineaCentral() {
-  stroke(255, 100);
-  strokeWeight(3);
+  stroke(255, 255, 0, 150); // Amarillo brillante con transparencia
+  strokeWeight(4);
   
-  // Línea punteada
-  for (int y = 0; y < height; y += 20) {
-    line(width/2, y, width/2, y + 10);
+  // Línea punteada con efecto de brillo
+  for (int y = 0; y < height; y += 25) {
+    line(width/2, y, width/2, y + 12);
   }
   
   noStroke();
@@ -134,11 +134,11 @@ void mostrarUI() {
   text("Rebotes: " + pelota.getRebotes(), width - 20, height - 60);
   text("Velocidad: " + nf(abs(pelota.getVelocidadX()) + abs(pelota.getVelocidadY()), 1, 1), width - 20, height - 40);
   
-  // Mostrar etiquetas de los enemigos
+  // Mostrar etiquetas de los enemigos con colores actualizados
   textSize(12);
-  fill(255, 100, 100);
+  fill(255, 0, 127); // Magenta para IA1
   text("IA1", width - 20, height - 20);
-  fill(255, 150, 100);
+  fill(0, 191, 255); // Cian para IA2
   text("IA2", width - 60, height - 20);
 }
 
@@ -158,9 +158,9 @@ void mostrarPantallaInicio() {
   text("¡Ahora enfrentas a DOS enemigos IA!", width/2, height/2 + 80);
   
   textSize(14);
-  fill(255, 100, 100);
+  fill(255, 0, 127); // Magenta para IA1
   text("IA1 (Rápida)", width/2, height/2 + 100);
-  fill(255, 150, 100);
+  fill(0, 191, 255); // Cian para IA2
   text("IA2 (Moderada)", width/2, height/2 + 115);
 }
 
