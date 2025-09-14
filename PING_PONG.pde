@@ -131,8 +131,15 @@ void mostrarUI() {
   
   // Mostrar información de la pelota
   textAlign(RIGHT);
-  text("Rebotes: " + pelota.getRebotes(), width - 20, height - 40);
-  text("Velocidad: " + nf(abs(pelota.getVelocidadX()) + abs(pelota.getVelocidadY()), 1, 1), width - 20, height - 20);
+  text("Rebotes: " + pelota.getRebotes(), width - 20, height - 60);
+  text("Velocidad: " + nf(abs(pelota.getVelocidadX()) + abs(pelota.getVelocidadY()), 1, 1), width - 20, height - 40);
+  
+  // Mostrar etiquetas de los enemigos
+  textSize(12);
+  fill(255, 100, 100);
+  text("IA1", width - 20, height - 20);
+  fill(255, 150, 100);
+  text("IA2", width - 60, height - 20);
 }
 
 // Método para mostrar la pantalla de inicio
@@ -148,6 +155,13 @@ void mostrarPantallaInicio() {
   
   textSize(16);
   text("Usa W y S para mover tu paddle", width/2, height/2 + 60);
+  text("¡Ahora enfrentas a DOS enemigos IA!", width/2, height/2 + 80);
+  
+  textSize(14);
+  fill(255, 100, 100);
+  text("IA1 (Rápida)", width/2, height/2 + 100);
+  fill(255, 150, 100);
+  text("IA2 (Moderada)", width/2, height/2 + 115);
 }
 
 // Método para verificar condición de victoria

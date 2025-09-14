@@ -41,15 +41,21 @@ class Paddle extends GameObject {
   
   // Método privado para actualizar movimiento de la IA
   private void actualizarIA() {
-    // IA simple que sigue la pelota
+    // IA que sigue la pelota con diferentes estrategias
     if (pelota != null) {
       float centroPaddle = getY() + getAlto() / 2;
       float centroPelota = pelota.getY() + pelota.getAlto() / 2;
       
-      if (centroPelota < centroPaddle - 10) {
-        mover(-velocidad * 0.8); // IA un poco más lenta
-      } else if (centroPelota > centroPaddle + 10) {
-        mover(velocidad * 0.8);
+      // Determinar qué tan agresiva debe ser la IA según su posición
+      float factorVelocidad = (this == ia1) ? 0.7 : 0.6; // IA1 más rápida que IA2
+      
+      // Solo moverse si la pelota se acerca a este lado
+      if (pelota.getVelocidadX() > 0) {
+        if (centroPelota < centroPaddle - 15) {
+          mover(-velocidad * factorVelocidad);
+        } else if (centroPelota > centroPaddle + 15) {
+          mover(velocidad * factorVelocidad);
+        }
       }
     }
   }

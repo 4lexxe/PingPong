@@ -49,8 +49,12 @@ class Ball extends GameObject {
       manejarColisionPaddle(jugador);
     }
     
-    if (ia != null && colisionaCon(ia)) {
-      manejarColisionPaddle(ia);
+    if (ia1 != null && colisionaCon(ia1)) {
+      manejarColisionPaddle(ia1);
+    }
+    
+    if (ia2 != null && colisionaCon(ia2)) {
+      manejarColisionPaddle(ia2);
     }
   }
   
@@ -91,8 +95,15 @@ class Ball extends GameObject {
   // Método privado para verificar goles
   private void verificarGoles() {
     if (getX() + getAncho() < 0) {
-      // Gol para la IA
-      puntajeIA++;
+      // Gol para las IAs - determinar cuál IA está más cerca de la pelota
+      float distanciaIA1 = abs((ia1.getY() + ia1.getAlto()/2) - (getY() + getAlto()/2));
+      float distanciaIA2 = abs((ia2.getY() + ia2.getAlto()/2) - (getY() + getAlto()/2));
+      
+      if (distanciaIA1 < distanciaIA2) {
+        puntajeIA1++;
+      } else {
+        puntajeIA2++;
+      }
       reiniciarDespuesGol(false);
     } else if (getX() > width) {
       // Gol para el jugador
