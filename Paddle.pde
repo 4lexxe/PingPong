@@ -1,0 +1,101 @@
+// Clase Paddle que hereda de GameObject
+class Paddle extends GameObject {
+  // Atributos privados específicos del paddle
+  private float velocidad;
+  private boolean esJugador; // true para jugador, false para IA
+  private float limiteArriba, limiteAbajo;
+  
+  // Constructor
+  public Paddle(float x, float y, float ancho, float alto, color colorPaddle, float velocidad, boolean esJugador) {
+    super(x, y, ancho, alto, colorPaddle);
+    this.velocidad = velocidad;
+    this.esJugador = esJugador;
+    this.limiteArriba = 0;
+    this.limiteAbajo = height - alto;
+  }
+  
+  // Implementación del método abstracto (polimorfismo)
+  @Override
+  public void actualizar() {
+    if (esJugador) {
+      actualizarJugador();
+    } else {
+      actualizarIA();
+    }
+    
+    // Mantener el paddle dentro de los límites
+    constrainPosition();
+  }
+  
+  // Método privado para actualizar movimiento del jugador
+  private void actualizarJugador() {
+    if (keyPressed) {
+      if ((key == 'w' || key == 'W') && getY() > limiteArriba) {
+        mover(-velocidad);
+      }
+      if ((key == 's' || key == 'S') && getY() < limiteAbajo) {
+        mover(velocidad);
+      }
+    }
+  }
+  
+  // Método privado para actualizar movimiento de la IA
+  private void actualizarIA() {
+    // IA simple que sigue la pelota
+    if (pelota != null) {
+      float centroPaddle = getY() + getAlto() / 2;
+      float centroPelota = pelota.getY() + pelota.getAlto() / 2;
+      
+      if (centroPelota < centroPaddle - 10) {
+        mover(-velocidad * 0.8); // IA un poco más lenta
+      } else if (centroPelota > centroPaddle + 10) {
+        mover(velocidad * 0.8);
+      }
+    }
+  }
+  
+  // Método privado para mover el paddle
+  private void mover(float deltaY) {
+    setY(getY() + deltaY);
+  }
+  
+  // Método privado para mantener el paddle en los límites
+  private void constrainPosition() {
+    if (getY() < limiteArriba) {
+      setY(limiteArriba);
+    }
+    if (getY() > limiteAbajo) {
+      setY(limiteAbajo);
+    }
+  }
+  
+  // Sobrescribir el método dibujar para añadir efectos visuales
+  @Override
+  public void dibujar() {
+    // Dibujar sombra
+    fill(0, 50);
+    rect(getX() + 2, getY() + 2, getAncho(), getAlto());
+    
+    // Dibujar paddle principal
+    super.dibujar();
+    
+    // Añadir brillo si es el jugador
+    if (esJugador) {
+      stroke(255, 100);
+      strokeWeight(2);
+      noFill();
+      rect(getX() - 1, getY() - 1, getAncho() + 2, getAlto() + 2);
+      noStroke();
+    }
+  }
+  
+  // Getter para velocidad
+  public float getVelocidad() {
+    return velocidad;
+  }
+  
+  // Setter para velocidad
+  public void setVelocidad(float velocidad) {
+    this.velocidad = velocidad;
+  }
+}
