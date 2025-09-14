@@ -10,6 +10,9 @@ int puntajeIA2 = 0;
 int tiempoEspera = 0;
 boolean juegoIniciado = false;
 
+// Sistema de partículas simple
+ArrayList<Particula> particulas;
+
 // Configuración inicial del juego
 void setup() {
   size(800, 600);
@@ -51,6 +54,9 @@ void inicializarJuego() {
   
   // Crear pelota - Amarillo dorado
   pelota = new Ball(width/2, height/2, 20, color(255, 215, 0), 5);
+  
+  // Inicializar sistema de partículas
+  particulas = new ArrayList<Particula>();
 }
 
 // Método para actualizar todos los objetos del juego
@@ -70,6 +76,9 @@ void actualizarJuego() {
   ia1.actualizar();
   ia2.actualizar();
   pelota.actualizar();
+  
+  // Actualizar partículas
+  actualizarParticulas();
 }
 
 // Método para dibujar todos los objetos del juego
@@ -80,6 +89,9 @@ void dibujarJuego() {
   ia1.dibujar();
   ia2.dibujar();
   pelota.dibujar();
+  
+  // Dibujar partículas
+  dibujarParticulas();
   
   // Dibujar línea central
   dibujarLineaCentral();
@@ -210,4 +222,78 @@ void reiniciarJuego() {
   juegoIniciado = true;
   pelota.reiniciarPelota();
   tiempoEspera = 0;
+  particulas.clear(); // Limpiar partículas
+}
+
+// ========== SISTEMA DE PARTÍCULAS SIMPLE ==========
+
+// Clase simple para partículas de efectos
+class Particula {
+  private float x, y;
+  private float velocidadX, velocidadY;
+  private color colorParticula;
+  private float vida;
+  private float vidaMaxima;
+  private float tamaño;
+  
+  public Particula(float x, float y, color c) {
+    this.x = x;
+    this.y = y;
+    this.velocidadX = random(-3, 3);
+    this.velocidadY = random(-3, 3);
+    this.colorParticula = c;
+    this.vidaMaxima = 30;
+    this.vida = vidaMaxima;
+    this.tamaño = random(2, 6);
+  }
+  
+  public void actualizar() {
+    x += velocidadX;
+    y += velocidadY;
+    vida--;
+    
+    // Gravedad sutil
+    velocidadY += 0.1;
+    
+    // Desaceleración
+    velocidadX *= 0.98;
+    velocidadY *= 0.98;
+  }
+  
+  public void dibujar() {
+    float alpha = map(vida, 0, vidaMaxima, 0, 255);
+    fill(red(colorParticula), green(colorParticula), blue(colorParticula), alpha);
+    noStroke();
+    ellipse(x, y, tamaño, tamaño);
+  }
+  
+  public boolean estaMuerta() {
+    return vida <= 0;
+  }
+}
+
+// Función para crear partículas de rebote
+void crearParticulasRebote(float x, float y, color c) {
+  for (int i = 0; i < 8; i++) {
+    particulas.add(new Particula(x, y, c));
+  }
+}
+
+// Función para actualizar todas las partículas
+void actualizarParticulas() {
+  for (int i = particulas.size() - 1; i >= 0; i--) {
+    Particula p = particulas.get(i);
+    p.actualizar();
+    
+    if (p.estaMuerta()) {
+      particulas.remove(i);
+    }
+  }
+}
+
+// Función para dibujar todas las partículas
+void dibujarParticulas() {
+  for (Particula p : particulas) {
+    p.dibujar();
+  }
 }

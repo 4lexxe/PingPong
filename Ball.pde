@@ -144,8 +144,8 @@ class Ball extends GameObject {
   
   // Método privado para simular sonido de rebote
   private void reproducirSonidoRebote() {
-    // Aquí se podría añadir un sonido real
-    // Por ahora, solo un efecto visual
+    // Crear partículas en el punto de rebote
+    crearParticulasRebote(getX() + getAncho()/2, getY() + getAlto()/2, getColor());
   }
   
   // Sobrescribir el método dibujar para efectos visuales
