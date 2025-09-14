@@ -2,10 +2,11 @@
 // Demuestra polimorfismo y encapsulación con clases GameObject, Paddle y Ball
 
 // Variables globales del juego
-Paddle jugador, ia;
+Paddle jugador, ia1, ia2;
 Ball pelota;
 int puntajeJugador = 0;
-int puntajeIA = 0;
+int puntajeIA1 = 0;
+int puntajeIA2 = 0;
 int tiempoEspera = 0;
 boolean juegoIniciado = false;
 
@@ -42,8 +43,11 @@ void inicializarJuego() {
   // Crear paddle del jugador (izquierda)
   jugador = new Paddle(30, height/2 - 60, 15, 120, color(100, 150, 255), 8, true);
   
-  // Crear paddle de la IA (derecha)
-  ia = new Paddle(width - 45, height/2 - 60, 15, 120, color(255, 100, 100), 6, false);
+  // Crear primer enemigo IA (derecha superior)
+  ia1 = new Paddle(width - 45, height/4 - 60, 15, 120, color(255, 100, 100), 6, false);
+  
+  // Crear segundo enemigo IA (derecha inferior)
+  ia2 = new Paddle(width - 45, 3*height/4 - 60, 15, 120, color(255, 150, 100), 5, false);
   
   // Crear pelota
   pelota = new Ball(width/2, height/2, 20, color(255, 255, 100), 5);
@@ -63,7 +67,8 @@ void actualizarJuego() {
   // Actualizar objetos usando polimorfismo
   // Cada objeto implementa su propio método actualizar()
   jugador.actualizar();
-  ia.actualizar();
+  ia1.actualizar();
+  ia2.actualizar();
   pelota.actualizar();
 }
 
@@ -72,7 +77,8 @@ void dibujarJuego() {
   // Dibujar objetos usando polimorfismo
   // Cada objeto puede tener su propia implementación de dibujar()
   jugador.dibujar();
-  ia.dibujar();
+  ia1.dibujar();
+  ia2.dibujar();
   pelota.dibujar();
   
   // Dibujar línea central
@@ -112,7 +118,8 @@ void mostrarUI() {
   
   // Mostrar puntajes
   text(puntajeJugador, width/4, 80);
-  text(puntajeIA, 3*width/4, 80);
+  text(puntajeIA1, 3*width/4, 60);
+  text(puntajeIA2, 3*width/4, 100);
   
   // Mostrar controles
   textSize(16);
@@ -145,12 +152,22 @@ void mostrarPantallaInicio() {
 
 // Método para verificar condición de victoria
 void verificarVictoria() {
-  if (puntajeJugador >= 10 || puntajeIA >= 10) {
+  int puntajeMaximo = 15; // Aumentamos el puntaje máximo por la dificultad
+  
+  if (puntajeJugador >= puntajeMaximo || puntajeIA1 >= puntajeMaximo || puntajeIA2 >= puntajeMaximo) {
     textAlign(CENTER);
     textSize(48);
     fill(255, 255, 0);
     
-    String ganador = puntajeJugador >= 10 ? "¡JUGADOR GANA!" : "¡IA GANA!";
+    String ganador;
+    if (puntajeJugador >= puntajeMaximo) {
+      ganador = "¡JUGADOR GANA!";
+    } else if (puntajeIA1 >= puntajeMaximo) {
+      ganador = "¡IA1 GANA!";
+    } else {
+      ganador = "¡IA2 GANA!";
+    }
+    
     text(ganador, width/2, height/2);
     
     textSize(20);
@@ -174,7 +191,8 @@ void keyPressed() {
 // Método para reiniciar el juego
 void reiniciarJuego() {
   puntajeJugador = 0;
-  puntajeIA = 0;
+  puntajeIA1 = 0;
+  puntajeIA2 = 0;
   juegoIniciado = true;
   pelota.reiniciarPelota();
   tiempoEspera = 0;
