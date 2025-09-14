@@ -2,20 +2,31 @@
 class Paddle extends GameObject {
   // Atributos privados específicos del paddle
   private float velocidad;
-
-
   private boolean esJugador; // true para jugador, false para IA
   private float limiteArriba, limiteAbajo;
+  private int tipoIA; // 1 = IA agresiva hacia arriba, 2 = IA defensiva hacia abajo
+  private float tiempoMovimiento; // Para patrones de movimiento
+  private float direccionPreferida; // -1 = prefiere arriba, 1 = prefiere abajo
   
   // Constructor
   public Paddle(float x, float y, float ancho, float alto, color colorPaddle, float velocidad, boolean esJugador) {
     super(x, y, ancho, alto, colorPaddle);
     this.velocidad = velocidad;
     this.esJugador = esJugador;
-
-
     this.limiteArriba = 0;
     this.limiteAbajo = height - alto;
+    this.tiempoMovimiento = 0;
+    
+    // Configurar tipo de IA basado en posición inicial
+    if (!esJugador) {
+      if (y < height/2) {
+        this.tipoIA = 1; // IA superior - agresiva hacia arriba
+        this.direccionPreferida = -1; // Prefiere moverse hacia arriba
+      } else {
+        this.tipoIA = 2; // IA inferior - defensiva hacia abajo  
+        this.direccionPreferida = 1; // Prefiere moverse hacia abajo
+      }
+    }
   }
   
   // Implementación del método abstracto (polimorfismo)
@@ -49,22 +60,79 @@ class Paddle extends GameObject {
   
   // Método privado para actualizar movimiento de la IA
   private void actualizarIA() {
-    // IA que sigue la pelota con diferentes estrategias
+    tiempoMovimiento += 0.02;
+    
     if (pelota != null) {
       float centroPaddle = getY() + getAlto() / 2;
       float centroPelota = pelota.getY() + pelota.getAlto() / 2;
       
-      // Determinar qué tan agresiva debe ser la IA según su posición
-      float factorVelocidad = (this == ia1) ? 0.7 : 0.6; // IA1 más rápida que IA2
-      
-      // Solo moverse si la pelota se acerca a este lado
-      if (pelota.getVelocidadX() > 0) {
-        if (centroPelota < centroPaddle - 15) {
-          mover(-velocidad * factorVelocidad);
-        } else if (centroPelota > centroPaddle + 15) {
-          mover(velocidad * factorVelocidad);
-        }
+      if (tipoIA == 1) {
+        // IA1 - Agresiva hacia arriba con movimiento ondulatorio
+        actualizarIA1(centroPaddle, centroPelota);
+      } else if (tipoIA == 2) {
+        // IA2 - Defensiva hacia abajo con patrón zigzag
+        actualizarIA2(centroPaddle, centroPelota);
       }
+    }
+  }
+  
+  // Método privado para IA1 - Comportamiento agresivo hacia arriba
+  private void actualizarIA1(float centroPaddle, float centroPelota) {
+    float factorVelocidad = 0.8;
+    
+    // Movimiento ondulatorio que prefiere la parte superior
+    float movimientoOndulatorio = sin(tiempoMovimiento * 3) * 2;
+    
+    if (pelota.getVelocidadX() > 0) {
+      // Seguir la pelota pero con tendencia hacia arriba
+      float diferencia = centroPelota - centroPaddle;
+      
+      if (abs(diferencia) > 20) {
+        // Movimiento principal hacia la pelota
+        float movimiento = diferencia > 0 ? velocidad : -velocidad;
+        // Añadir bias hacia arriba
+        movimiento += direccionPreferida * velocidad * 0.3;
+        // Añadir movimiento ondulatorio
+        movimiento += movimientoOndulatorio;
+        
+        mover(movimiento * factorVelocidad);
+      } else {
+        // Movimiento sutil hacia arriba cuando está cerca de la pelota
+        mover((direccionPreferida * velocidad * 0.4 + movimientoOndulatorio) * factorVelocidad);
+      }
+    } else {
+      // Movimiento defensivo ondulatorio hacia arriba
+      mover((direccionPreferida * velocidad * 0.2 + movimientoOndulatorio) * factorVelocidad);
+    }
+  }
+  
+  // Método privado para IA2 - Comportamiento defensivo hacia abajo
+  private void actualizarIA2(float centroPaddle, float centroPelota) {
+    float factorVelocidad = 0.6;
+    
+    // Movimiento zigzag que prefiere la parte inferior
+    float movimientoZigzag = cos(tiempoMovimiento * 4) * 1.5;
+    
+    if (pelota.getVelocidadX() > 0) {
+      // Seguir la pelota pero con tendencia hacia abajo
+      float diferencia = centroPelota - centroPaddle;
+      
+      if (abs(diferencia) > 25) {
+        // Movimiento principal hacia la pelota (más lento y defensivo)
+        float movimiento = diferencia > 0 ? velocidad : -velocidad;
+        // Añadir bias hacia abajo
+        movimiento += direccionPreferida * velocidad * 0.2;
+        // Añadir movimiento zigzag
+        movimiento += movimientoZigzag;
+        
+        mover(movimiento * factorVelocidad);
+      } else {
+        // Movimiento sutil hacia abajo cuando está cerca de la pelota
+        mover((direccionPreferida * velocidad * 0.3 + movimientoZigzag) * factorVelocidad);
+      }
+    } else {
+      // Movimiento defensivo zigzag hacia abajo
+      mover((direccionPreferida * velocidad * 0.15 + movimientoZigzag) * factorVelocidad);
     }
   }
   

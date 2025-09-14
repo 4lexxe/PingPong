@@ -159,9 +159,9 @@ void mostrarPantallaInicio() {
   
   textSize(14);
   fill(255, 0, 127); // Magenta para IA1
-  text("IA1 (Rápida)", width/2, height/2 + 100);
+  text("IA1 (Agresiva ↑ Ondulatorio)", width/2, height/2 + 100);
   fill(0, 191, 255); // Cian para IA2
-  text("IA2 (Moderada)", width/2, height/2 + 115);
+  text("IA2 (Defensiva ↓ Zigzag)", width/2, height/2 + 115);
 }
 
 // Método para verificar condición de victoria
